@@ -12,7 +12,7 @@
             },
             "channel": {
                 "title": "Add your first Chzzk channel",
-                "description": "Paste the channel URL (https://chzzk.naver.com/CHANNELID) or the bare 32-character channel ID. You can add more channels later from this integration's Configure menu.",
+                "description": "Paste the channel URL or the bare 32-character channel ID. You can add more channels later from this integration's Configure menu.",
                 "data": {
                     "channel": "Channel URL or ID"
                 }
@@ -42,7 +42,7 @@
             },
             "add_channel": {
                 "title": "Add a channel",
-                "description": "Paste the channel URL (https://chzzk.naver.com/CHANNELID) or the bare 32-character channel ID.",
+                "description": "Paste the channel URL or the bare 32-character channel ID.",
                 "data": {
                     "channel": "Channel URL or ID"
                 }

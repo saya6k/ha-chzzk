@@ -12,7 +12,7 @@
             },
             "channel": {
                 "title": "最初の Chzzk チャンネルを追加",
-                "description": "チャンネル URL (https://chzzk.naver.com/CHANNELID) または 32 文字のチャンネル ID を貼り付けてください。追加のチャンネルは統合の Configure メニューから後で登録できます。",
+                "description": "チャンネル URL または 32 文字のチャンネル ID を貼り付けてください。追加のチャンネルは統合の Configure メニューから後で登録できます。",
                 "data": {
                     "channel": "チャンネル URL または ID"
                 }
@@ -42,7 +42,7 @@
             },
             "add_channel": {
                 "title": "チャンネルを追加",
-                "description": "チャンネル URL (https://chzzk.naver.com/CHANNELID) または 32 文字のチャンネル ID を貼り付けてください。",
+                "description": "チャンネル URL または 32 文字のチャンネル ID を貼り付けてください。",
                 "data": {
                     "channel": "チャンネル URL または ID"
                 }

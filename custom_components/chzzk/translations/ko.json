@@ -12,7 +12,7 @@
             },
             "channel": {
                 "title": "첫 치지직 채널 추가",
-                "description": "채널 URL(https://chzzk.naver.com/CHANNELID) 또는 32자 채널 ID를 붙여넣으세요. 추가 채널은 통합의 설정(Configure) 메뉴에서 더 등록할 수 있습니다.",
+                "description": "채널 URL 또는 32자 채널 ID를 붙여넣으세요. 추가 채널은 통합의 설정(Configure) 메뉴에서 더 등록할 수 있습니다.",
                 "data": {
                     "channel": "채널 URL 또는 ID"
                 }
@@ -42,7 +42,7 @@
             },
             "add_channel": {
                 "title": "채널 추가",
-                "description": "채널 URL(https://chzzk.naver.com/CHANNELID) 또는 32자 채널 ID를 붙여넣으세요.",
+                "description": "채널 URL 또는 32자 채널 ID를 붙여넣으세요.",
                 "data": {
                     "channel": "채널 URL 또는 ID"
                 }
