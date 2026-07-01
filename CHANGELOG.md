@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.7](https://github.com/saya6k/ha-chzzk/compare/chzzk-v0.5.6...chzzk-v0.5.7) (2026-07-01)
+
+
+### Bug Fixes
+
+* register channels as service entries in device registry ([#6](https://github.com/saya6k/ha-chzzk/issues/6)) ([a14ff29](https://github.com/saya6k/ha-chzzk/commit/a14ff293cfea1e0bd3ce8be1a27ae9522f684a6a))
+
+
+### Documentation
+
+* add HACS My Home Assistant badge to README ([#4](https://github.com/saya6k/ha-chzzk/issues/4)) ([d397aee](https://github.com/saya6k/ha-chzzk/commit/d397aee1841e5a45286633bd7f0951bb73d87798))
+
 ## [0.5.6](https://github.com/saya6k/ha-chzzk/compare/chzzk-v0.5.5...chzzk-v0.5.6) (2026-06-16)
 
 
