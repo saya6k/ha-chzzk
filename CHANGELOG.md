@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.5.11](https://github.com/saya6k/ha-chzzk/compare/chzzk-v0.5.10...chzzk-v0.5.11) (2026-07-01)
+
+
+### Bug Fixes
+
+* define config_entry_only CONFIG_SCHEMA ([#9](https://github.com/saya6k/ha-chzzk/issues/9)) ([1ad2e98](https://github.com/saya6k/ha-chzzk/commit/1ad2e986fd355a7cee8f84005fefe3eb61c73209))
+* **manifest:** point documentation at the published docs site ([aea06f6](https://github.com/saya6k/ha-chzzk/commit/aea06f6239d2d605eb39f9ddfa2707397ef3eadd))
+* register channels as service entries in device registry ([#6](https://github.com/saya6k/ha-chzzk/issues/6)) ([a14ff29](https://github.com/saya6k/ha-chzzk/commit/a14ff293cfea1e0bd3ce8be1a27ae9522f684a6a))
+* resolve HACS + hassfest validation errors ([a618033](https://github.com/saya6k/ha-chzzk/commit/a6180336152a4307a16be11d7bcdff26e7e1070f))
+
+
+### Documentation
+
+* add HACS My Home Assistant badge to README ([#4](https://github.com/saya6k/ha-chzzk/issues/4)) ([d397aee](https://github.com/saya6k/ha-chzzk/commit/d397aee1841e5a45286633bd7f0951bb73d87798))
+* reflect service entry_type in agent instructions ([#7](https://github.com/saya6k/ha-chzzk/issues/7)) ([84a6530](https://github.com/saya6k/ha-chzzk/commit/84a65302de1608f6a5cf78fe80e67a72b5be8ef2))
+
+
+### CI
+
+* draft releases with manual publish; deploy docs on release-published ([#11](https://github.com/saya6k/ha-chzzk/issues/11)) ([228aaea](https://github.com/saya6k/ha-chzzk/commit/228aaea999b6381a86c057d9b1a0324aa095ce79))
+* gate release and docs workflows on Validate success ([d448e49](https://github.com/saya6k/ha-chzzk/commit/d448e495721c15c4ee8b5597b812f83a403a7426))
+* orchestrate validate/release/docs as one check suite via reusable workflows ([2fb4134](https://github.com/saya6k/ha-chzzk/commit/2fb41346aedf95ceb47afc0d8f77e09f656cb340))
+* pass a PAT to release-please so the release PR runs CI ([#2](https://github.com/saya6k/ha-chzzk/issues/2)) ([d6c0592](https://github.com/saya6k/ha-chzzk/commit/d6c0592e29fdbebaf4bc82bc61c8de70a7de9cc0))
+
 ## [0.5.10](https://github.com/saya6k/ha-chzzk/compare/chzzk-v0.5.9...chzzk-v0.5.10) (2026-07-01)
 
 
