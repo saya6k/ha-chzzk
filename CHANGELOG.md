@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.9](https://github.com/saya6k/ha-chzzk/compare/chzzk-v0.5.8...chzzk-v0.5.9) (2026-07-01)
+
+
+### Bug Fixes
+
+* define config_entry_only CONFIG_SCHEMA ([#9](https://github.com/saya6k/ha-chzzk/issues/9)) ([1ad2e98](https://github.com/saya6k/ha-chzzk/commit/1ad2e986fd355a7cee8f84005fefe3eb61c73209))
+
 ## [0.5.8](https://github.com/saya6k/ha-chzzk/compare/chzzk-v0.5.7...chzzk-v0.5.8) (2026-07-01)
 
 
