@@ -52,9 +52,9 @@ Tool results use `llm.ToolResult`; its `data` preserves the convention used by [
 
 ### HACS
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=saya6k&repository=hacs-chzzk&category=integration)
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=saya6k&repository=ha-chzzk&category=integration)
 
-1. **HACS → ⋮ → Custom repositories** → add `https://github.com/saya6k/hacs-chzzk` (category *Integration*)
+1. **HACS → ⋮ → Custom repositories** → add `https://github.com/saya6k/ha-chzzk` (category *Integration*)
 2. Install **Chzzk**, restart Home Assistant
 3. **Settings → Devices & Services → Add Integration → Chzzk**
 4. Paste the channel URL (`https://chzzk.naver.com/<channel_id>`) or the 32-char channel ID
