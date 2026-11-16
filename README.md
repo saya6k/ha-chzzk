@@ -2,7 +2,7 @@
 
 [![Built with Claude Code](https://img.shields.io/badge/Built%20with%20Claude%20Code-D97757?style=for-the-badge&logo=claude&logoColor=white)](https://claude.ai/code)
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-41BDF5?style=for-the-badge&logo=homeassistant&logoColor=white)](https://www.home-assistant.io/)
-[![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5?style=for-the-badge&logo=homeassistantcommunitystore&logoColor=white)](https://hacs.xyz/)
+[![HACS](https://img.shields.io/badge/HACS-Default-41BDF5?style=for-the-badge&logo=homeassistantcommunitystore&logoColor=white)](https://hacs.xyz/)
 [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-green?style=for-the-badge)](LICENSE)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/saya6k)
@@ -54,8 +54,8 @@ Tool results use `llm.ToolResult`; its `data` preserves the convention used by [
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=saya6k&repository=ha-chzzk&category=integration)
 
-1. **HACS → ⋮ → Custom repositories** → add `https://github.com/saya6k/ha-chzzk` (category *Integration*)
-2. Install **Chzzk**, restart Home Assistant
+1. **HACS** → search for **Chzzk**
+2. Install it, restart Home Assistant
 3. **Settings → Devices & Services → Add Integration → Chzzk**
 4. Paste the channel URL (`https://chzzk.naver.com/<channel_id>`) or the 32-char channel ID
 5. (Optional) On the next screen, paste `NID_AUT` and `NID_SES` cookies from chzzk.naver.com — only needed for adult-only channels or future authenticated features. Leave blank to skip.
