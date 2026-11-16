@@ -45,8 +45,8 @@ LLM 도구는 **Home Assistant 2026.10.0b0 이상**이 필요합니다 — HA의
 
 ### HACS
 
-1. **HACS → ⋮ → Custom repositories** → `https://github.com/saya6k/ha-chzzk` 추가 (카테고리 *Integration*)
-2. **Chzzk** 설치 후 Home Assistant 재시작
+1. **HACS** → **Chzzk** 검색
+2. 설치 후 Home Assistant 재시작
 3. **설정 → 기기 및 서비스 → 통합 추가 → Chzzk**
 4. 채널 URL(`https://chzzk.naver.com/<channel_id>`) 또는 32자 채널 ID 입력
 5. (선택) 다음 화면에서 chzzk.naver.com의 `NID_AUT`, `NID_SES` 쿠키 입력 — 성인 전용 채널이나 향후 인증 기능에만 필요. 비워두면 건너뜀.

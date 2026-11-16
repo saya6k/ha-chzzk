@@ -45,8 +45,8 @@ The LLM tools require **Home Assistant 2026.10.0b0 or later** — they're provid
 
 ### HACS
 
-1. **HACS → ⋮ → Custom repositories** → add `https://github.com/saya6k/ha-chzzk` (category *Integration*)
-2. Install **Chzzk**, restart Home Assistant
+1. **HACS** → search for **Chzzk**
+2. Install it, restart Home Assistant
 3. **Settings → Devices & Services → Add Integration → Chzzk**
 4. Paste the channel URL (`https://chzzk.naver.com/<channel_id>`) or the 32-char channel ID
 5. (Optional) On the next screen, paste `NID_AUT` and `NID_SES` cookies from chzzk.naver.com — only needed for adult-only channels or future authenticated features. Leave blank to skip.
