@@ -93,7 +93,7 @@ Response (abridged):
   "channels": [
     {
       "channel_id": "abc...",
-      "name": "원규",
+      "name": "홍길동",
       "is_live": true,
       "title": "오늘은 발로란트",
       "category": "발로란트",
