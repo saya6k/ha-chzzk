@@ -19,6 +19,7 @@ import logging
 from dataclasses import dataclass, replace
 from datetime import timedelta
 
+from aiohttp import ClientConnectionError
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
@@ -31,7 +32,19 @@ from .api import (
 )
 from .const import CHANNEL_INFO_EVERY_N_POLLS, DEFAULT_SCAN_INTERVAL, DOMAIN
 
+try:  # HA 2026.12+: logs the first failure once at info instead of error on every poll
+    from homeassistant.helpers.update_coordinator import UpdateFailedUnreachable
+except ImportError:  # older cores
+    UpdateFailedUnreachable = UpdateFailed
+
 _LOGGER = logging.getLogger(__name__)
+
+
+def _update_failed(exc: ChzzkApiError) -> UpdateFailed:
+    """UpdateFailedUnreachable when Chzzk could not be reached at all (a
+    connection error or timeout), plain UpdateFailed for an API answer."""
+    unreachable = isinstance(exc.__cause__, (ClientConnectionError, TimeoutError))
+    return (UpdateFailedUnreachable if unreachable else UpdateFailed)(str(exc))
 
 
 @dataclass
@@ -72,7 +85,7 @@ class ChzzkCoordinator(DataUpdateCoordinator[ChzzkData]):
         except ChzzkChannelNotFound as exc:
             raise UpdateFailed(f"Channel {self.channel_id} not found: {exc}") from exc
         except ChzzkApiError as exc:
-            raise UpdateFailed(str(exc)) from exc
+            raise _update_failed(exc) from exc
 
         # If the channel is live, fetch the thumbnail (only available on the
         # heavier live-detail endpoint). One extra call/min/live-channel.
@@ -104,7 +117,7 @@ class ChzzkCoordinator(DataUpdateCoordinator[ChzzkData]):
                 )
             except ChzzkApiError as exc:
                 if self._cached_channel is None:
-                    raise UpdateFailed(str(exc)) from exc
+                    raise _update_failed(exc) from exc
                 _LOGGER.warning(
                     "Channel info refresh failed, keeping cache: %s", exc
                 )
