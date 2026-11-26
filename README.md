@@ -48,6 +48,7 @@ Once installed, an **"Chzzk"** entry shows up under **Settings → Voice assista
 
 Tool results use `llm.ToolResult`; its `data` preserves the convention used by [`voice-satellite-card-llm-tools`](https://github.com/jxlarrea/voice-satellite-card-llm-tools): `source`, `auto_display`, `instruction`, `results[]` with each item carrying `image_url` / `thumbnail_url` / `title` / `source_url`. The matching satellite Lovelace card auto-renders an image grid; the LLM uses the extra per-item fields (`is_streaming`, `stream_title`, `category`, `viewer_count`, …) to narrate.
 
+<!-- ha-marketplace:exclude-start -->
 ## Install
 
 ### HACS
@@ -56,13 +57,17 @@ Tool results use `llm.ToolResult`; its `data` preserves the convention used by [
 
 1. **HACS** → search for **Chzzk**
 2. Install it, restart Home Assistant
-3. **Settings → Devices & Services → Add Integration → Chzzk**
-4. Paste the channel URL (`https://chzzk.naver.com/<channel_id>`) or the 32-char channel ID
-5. (Optional) On the next screen, paste `NID_AUT` and `NID_SES` cookies from chzzk.naver.com — only needed for adult-only channels or future authenticated features. Leave blank to skip.
 
 ### Manual
 
 Copy `custom_components/chzzk/` into your Home Assistant config's `custom_components/` directory and restart.
+<!-- ha-marketplace:exclude-end -->
+
+## Setup
+
+1. **Settings → Devices & Services → Add Integration → Chzzk**
+2. Paste the channel URL (`https://chzzk.naver.com/<channel_id>`) or the 32-char channel ID
+3. (Optional) On the next screen, paste `NID_AUT` and `NID_SES` cookies from chzzk.naver.com — only needed for adult-only channels or future authenticated features. Leave blank to skip.
 
 ## How it works
 
