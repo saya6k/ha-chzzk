@@ -148,6 +148,8 @@ class ChzzkClient:
                 payload = await resp.json(content_type=None)
         except ClientError as exc:
             raise ChzzkApiError(f"HTTP error from {url}: {exc}") from exc
+        except ChzzkApiError:
+            raise
         except Exception as exc:  # pragma: no cover - defensive
             raise ChzzkApiError(f"Unexpected error from {url}: {exc}") from exc
 
