@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Any
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -17,8 +18,13 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-from .coordinator import ChzzkCoordinator, ChzzkData
-from .entity import ChzzkEntity
+from .coordinator import (
+    ChzzkCategoryCoordinator,
+    ChzzkCategoryData,
+    ChzzkCoordinator,
+    ChzzkData,
+)
+from .entity import ChzzkCategoryEntity, ChzzkEntity
 
 
 @dataclass(kw_only=True, frozen=True)
@@ -66,6 +72,47 @@ SENSORS: tuple[ChzzkSensorEntityDescription, ...] = (
 )
 
 
+@dataclass(kw_only=True, frozen=True)
+class ChzzkCategorySensorEntityDescription(SensorEntityDescription):
+    value_fn: Callable[[ChzzkCategoryData], int | None]
+    attrs_fn: Callable[[ChzzkCategoryData], dict[str, Any]] | None = None
+
+
+def _top_channels(data: ChzzkCategoryData) -> dict[str, Any]:
+    return {
+        "channels": [
+            {
+                "channel_id": live.channel_id,
+                "channel_name": live.channel_name,
+                "title": live.title,
+                "viewers": live.viewers,
+            }
+            for live in data.top_lives
+        ]
+    }
+
+
+CATEGORY_SENSORS: tuple[ChzzkCategorySensorEntityDescription, ...] = (
+    ChzzkCategorySensorEntityDescription(
+        key="live_channels",
+        translation_key="live_channels",
+        icon="mdi:broadcast",
+        native_unit_of_measurement="channels",
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda d: d.info.open_live_count,
+        attrs_fn=_top_channels,
+    ),
+    ChzzkCategorySensorEntityDescription(
+        key="viewers",
+        translation_key="viewers",
+        icon="mdi:account-eye",
+        native_unit_of_measurement="viewers",
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda d: d.info.concurrent_user_count,
+    ),
+)
+
+
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
@@ -75,7 +122,15 @@ async def async_setup_entry(
     entities: list[ChzzkSensor] = []
     for coord in coords.values():
         entities.extend(ChzzkSensor(coord, desc) for desc in SENSORS)
-    async_add_entities(entities)
+    category_coords: dict[str, ChzzkCategoryCoordinator] = hass.data[DOMAIN][
+        "category_coordinators"
+    ]
+    category_entities = [
+        ChzzkCategorySensor(coord, desc)
+        for coord in category_coords.values()
+        for desc in CATEGORY_SENSORS
+    ]
+    async_add_entities([*entities, *category_entities])
 
 
 class ChzzkSensor(ChzzkEntity, SensorEntity):
@@ -94,3 +149,23 @@ class ChzzkSensor(ChzzkEntity, SensorEntity):
         if data is None:
             return None
         return self.entity_description.value_fn(data)
+
+
+class ChzzkCategorySensor(ChzzkCategoryEntity, SensorEntity):
+    entity_description: ChzzkCategorySensorEntityDescription
+    # Changes every poll and only matters live; keep it out of the database.
+    _unrecorded_attributes = frozenset({"channels"})
+
+    @property
+    def native_value(self) -> int | None:
+        data = self.coordinator.data
+        if data is None:
+            return None
+        return self.entity_description.value_fn(data)
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any] | None:
+        data = self.coordinator.data
+        if data is None or self.entity_description.attrs_fn is None:
+            return None
+        return self.entity_description.attrs_fn(data)

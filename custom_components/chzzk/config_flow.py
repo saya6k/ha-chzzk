@@ -2,8 +2,8 @@
 
 User adds the integration once. The first step asks for optional Naver session
 cookies (shared across all channels). The second step takes the first channel
-URL/ID. After that, channels are added/removed and cookies refreshed via the
-options flow.
+URL/ID. After that, channels and categories are added/removed and cookies
+refreshed via the options flow.
 
 Notes for HA ≥ 2024.12 / 2026.x:
 * No ``__init__`` override on either flow class. HA's flow manager injects
@@ -38,9 +38,14 @@ from .api import (
     ChzzkApiError,
     ChzzkChannelNotFound,
     ChzzkClient,
+    extract_category,
     extract_channel_id,
 )
 from .const import (
+    CONF_CATEGORIES,
+    CONF_CATEGORY_ID,
+    CONF_CATEGORY_NAME,
+    CONF_CATEGORY_TYPE,
     CONF_CHANNEL_ID,
     CONF_CHANNEL_NAME,
     CONF_CHANNELS,
@@ -83,6 +88,26 @@ async def _validate_channel(
         _LOGGER.warning("Chzzk API error: %s", exc)
         return None, "cannot_connect"
     return channel.channel_name or channel_id, ""
+
+
+async def _validate_category(
+    hass, category_type: str, category_id: str, cookies: dict[str, str] | None
+) -> tuple[str | None, str]:
+    """Return (category_name, error_code). category_name is None on error."""
+    session = async_get_clientsession(hass)
+    client = ChzzkClient(session, cookies=cookies or None)
+    try:
+        info = await client.get_category(category_type, category_id)
+    except ChzzkChannelNotFound:
+        return None, "category_not_found"
+    except ChzzkApiError as exc:
+        _LOGGER.warning("Chzzk API error: %s", exc)
+        return None, "cannot_connect"
+    return info.category_value, ""
+
+
+def _category_key(category: dict[str, str]) -> str:
+    return f"{category[CONF_CATEGORY_TYPE]}/{category[CONF_CATEGORY_ID]}"
 
 
 async def _validate_cookies(
@@ -179,15 +204,26 @@ class ChzzkOptionsFlow(OptionsFlow):
     ) -> ConfigFlowResult:
         return self.async_show_menu(
             step_id="init",
-            menu_options=["add_channel", "remove_channel", "update_cookies"],
+            menu_options=[
+                "add_channel",
+                "remove_channel",
+                "add_category",
+                "remove_category",
+                "update_cookies",
+            ],
         )
 
     # ------------------------------------------------------------- helpers
     def _channels(self) -> list[dict[str, str]]:
         return list(self.config_entry.options.get(CONF_CHANNELS, []))
 
+    def _categories(self) -> list[dict[str, str]]:
+        return list(self.config_entry.options.get(CONF_CATEGORIES, []))
+
     def _finish_with_options(
-        self, channels: list[dict[str, str]] | None = None
+        self,
+        channels: list[dict[str, str]] | None = None,
+        categories: list[dict[str, str]] | None = None,
     ) -> ConfigFlowResult:
         """Persist updated options without losing siblings.
 
@@ -197,6 +233,8 @@ class ChzzkOptionsFlow(OptionsFlow):
         new_options = dict(self.config_entry.options)
         if channels is not None:
             new_options[CONF_CHANNELS] = channels
+        if categories is not None:
+            new_options[CONF_CATEGORIES] = categories
         return self.async_create_entry(title="", data=new_options)
 
     def _cookies(self) -> dict[str, str]:
@@ -270,6 +308,76 @@ class ChzzkOptionsFlow(OptionsFlow):
         return self.async_show_form(
             step_id="remove_channel",
             data_schema=vol.Schema({vol.Required("channel"): select}),
+        )
+
+    # ------------------------------------------------------------- add category
+    async def async_step_add_category(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        errors: dict[str, str] = {}
+
+        if user_input is not None:
+            parsed = extract_category(user_input["category"])
+            if parsed is None:
+                errors["category"] = "invalid_category"
+            else:
+                category_type, category_id = parsed
+                categories = self._categories()
+                if any(
+                    _category_key(c) == f"{category_type}/{category_id}"
+                    for c in categories
+                ):
+                    errors["category"] = "category_already_added"
+                else:
+                    name, err = await _validate_category(
+                        self.hass, category_type, category_id, self._cookies()
+                    )
+                    if err:
+                        errors["category"] = err
+                    else:
+                        categories.append(
+                            {
+                                CONF_CATEGORY_TYPE: category_type,
+                                CONF_CATEGORY_ID: category_id,
+                                CONF_CATEGORY_NAME: name or "",
+                            }
+                        )
+                        return self._finish_with_options(categories=categories)
+
+        return self.async_show_form(
+            step_id="add_category",
+            data_schema=vol.Schema({vol.Required("category"): str}),
+            errors=errors,
+        )
+
+    # ------------------------------------------------------------- remove category
+    async def async_step_remove_category(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        categories = self._categories()
+        if not categories:
+            return self.async_abort(reason="no_categories")
+
+        if user_input is not None:
+            target = user_input["category"]
+            categories = [c for c in categories if _category_key(c) != target]
+            return self._finish_with_options(categories=categories)
+
+        select = SelectSelector(
+            SelectSelectorConfig(
+                options=[
+                    SelectOptionDict(
+                        value=_category_key(c),
+                        label=c.get(CONF_CATEGORY_NAME) or _category_key(c),
+                    )
+                    for c in categories
+                ],
+                multiple=False,
+            )
+        )
+        return self.async_show_form(
+            step_id="remove_category",
+            data_schema=vol.Schema({vol.Required("category"): select}),
         )
 
     # ------------------------------------------------------------- update cookies

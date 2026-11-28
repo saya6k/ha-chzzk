@@ -22,6 +22,15 @@ Requires **Home Assistant 2026.10.0b0 or later**.
 | Started at | sensor | `openDate`, `device_class: timestamp` |
 | Followers | sensor | Channel follower count |
 
+## Entities (per category)
+
+Add a category from the integration's **Configure** menu (**Add a category**) with its URL (`chzzk.naver.com/category/GAME/League_of_Legends`) or type/id (`GAME/League_of_Legends`). Each category becomes its own device, polled every 5 minutes.
+
+| Entity | Type | Notes |
+| --- | --- | --- |
+| Live channels | sensor | `openLiveCount`, `state_class: measurement`; attribute `channels` lists the 5 most-watched streams (`channel_id`, `channel_name`, `title`, `viewers`) and isn't recorded |
+| Viewers | sensor | `concurrentUserCount` summed over the category, `state_class: measurement` |
+
 ## Media source
 
 Configured channels appear under **Media → Chzzk**. Open a channel to find its live stream (🔴 LIVE, on top while on air — HLS) followed by its 20 latest videos (replays and uploads — MP4, or HLS while a replay is still being encoded). Both play on any media player that handles them (Chromecast, VLC, browser, …). From an automation:

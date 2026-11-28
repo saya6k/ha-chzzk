@@ -19,6 +19,10 @@ MAX_SCAN_INTERVAL_SECONDS = 900
 # Channel info changes minutely; only refresh it every Nth live-status poll.
 CHANNEL_INFO_EVERY_N_POLLS = 10
 
+# Categories: two calls (info + top lives) per category per interval.
+CATEGORY_SCAN_INTERVAL = timedelta(minutes=5)
+CATEGORY_TOP_LIVES = 5
+
 # Options-flow keys
 CONF_SCAN_INTERVAL = "scan_interval"
 
@@ -26,6 +30,11 @@ CONF_SCAN_INTERVAL = "scan_interval"
 CONF_CHANNEL_ID = "channel_id"
 CONF_CHANNEL_NAME = "channel_name"
 CONF_CHANNELS = "channels"  # list[{channel_id, channel_name}] in entry.options
+CONF_CATEGORY_TYPE = "category_type"
+CONF_CATEGORY_ID = "category_id"
+CONF_CATEGORY_NAME = "category_name"
+# list[{category_type, category_id, category_name}] in entry.options
+CONF_CATEGORIES = "categories"
 CONF_NID_AUT = "nid_aut"
 CONF_NID_SES = "nid_ses"
 

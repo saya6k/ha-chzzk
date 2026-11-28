@@ -33,10 +33,12 @@
         "step": {
             "init": {
                 "title": "Chzzk",
-                "description": "チャンネルの追加・削除や、すべてのチャンネルで共有される Naver セッションクッキーの更新ができます。",
+                "description": "チャンネルやカテゴリの追加・削除や、すべてのチャンネルで共有される Naver セッションクッキーの更新ができます。",
                 "menu_options": {
                     "add_channel": "チャンネル追加",
                     "remove_channel": "チャンネル削除",
+                    "add_category": "カテゴリ追加",
+                    "remove_category": "カテゴリ削除",
                     "update_cookies": "Naver セッションクッキーの更新"
                 }
             },
@@ -54,6 +56,20 @@
                     "channel": "チャンネル"
                 }
             },
+            "add_category": {
+                "title": "カテゴリを追加",
+                "description": "カテゴリの URL(chzzk.naver.com/category/GAME/League_of_Legends)または type/id(GAME/League_of_Legends)を貼り付けてください。",
+                "data": {
+                    "category": "カテゴリ URL または type/id"
+                }
+            },
+            "remove_category": {
+                "title": "カテゴリを削除",
+                "description": "削除するカテゴリを選択してください。カテゴリのデバイスとエンティティは自動的に削除されます。",
+                "data": {
+                    "category": "カテゴリ"
+                }
+            },
             "update_cookies": {
                 "title": "Naver セッションクッキーの更新",
                 "description": "セッションが切れた場合は共有 NID_AUT と NID_SES を新しい値に更新してください。両方を空にすると認証要求は無効になります。",
@@ -68,10 +84,14 @@
             "not_found": "Chzzk はこのチャンネル ID を認識していません。",
             "cannot_connect": "api.chzzk.naver.com に接続できませんでした。",
             "invalid_cookies": "Chzzk がクッキーを拒否しました。chzzk.naver.com から取り直してください。",
-            "already_added": "このチャンネルは既に追加されています。"
+            "already_added": "このチャンネルは既に追加されています。",
+            "invalid_category": "入力からカテゴリを取得できませんでした。",
+            "category_not_found": "Chzzk がこのカテゴリを認識できません。",
+            "category_already_added": "このカテゴリはすでに追加されています。"
         },
         "abort": {
-            "no_channels": "登録されているチャンネルがありません。"
+            "no_channels": "登録されているチャンネルがありません。",
+            "no_categories": "カテゴリがまだ登録されていません。"
         }
     },
     "entity": {
@@ -108,6 +128,9 @@
             },
             "followers": {
                 "name": "フォロワー数"
+            },
+            "live_channels": {
+                "name": "配信中のチャンネル数"
             }
         }
     }
