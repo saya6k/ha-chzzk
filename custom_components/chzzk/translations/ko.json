@@ -33,10 +33,12 @@
         "step": {
             "init": {
                 "title": "치지직",
-                "description": "채널을 추가하거나 제거하고, 모든 채널이 공유하는 Naver 세션 쿠키를 갱신할 수 있습니다.",
+                "description": "채널과 카테고리를 추가하거나 제거하고, 모든 채널이 공유하는 Naver 세션 쿠키를 갱신할 수 있습니다.",
                 "menu_options": {
                     "add_channel": "채널 추가",
                     "remove_channel": "채널 제거",
+                    "add_category": "카테고리 추가",
+                    "remove_category": "카테고리 제거",
                     "update_cookies": "Naver 세션 쿠키 갱신"
                 }
             },
@@ -54,6 +56,20 @@
                     "channel": "채널"
                 }
             },
+            "add_category": {
+                "title": "카테고리 추가",
+                "description": "카테고리 URL(chzzk.naver.com/category/GAME/League_of_Legends) 또는 type/id(GAME/League_of_Legends)를 붙여넣으세요.",
+                "data": {
+                    "category": "카테고리 URL 또는 type/id"
+                }
+            },
+            "remove_category": {
+                "title": "카테고리 제거",
+                "description": "제거할 카테고리를 선택하세요. 해당 카테고리의 디바이스와 엔티티는 자동으로 정리됩니다.",
+                "data": {
+                    "category": "카테고리"
+                }
+            },
             "update_cookies": {
                 "title": "Naver 세션 쿠키 갱신",
                 "description": "이전 세션이 만료된 경우 공유 NID_AUT 와 NID_SES 를 새 값으로 갱신하세요. 두 칸을 모두 비우면 인증 요청을 끕니다.",
@@ -68,10 +84,14 @@
             "not_found": "치지직이 이 채널 ID를 찾을 수 없습니다.",
             "cannot_connect": "api.chzzk.naver.com에 연결하지 못했습니다.",
             "invalid_cookies": "치지직이 이 쿠키를 거부했습니다. chzzk.naver.com에서 다시 복사해 주세요.",
-            "already_added": "이 채널은 이미 추가되어 있습니다."
+            "already_added": "이 채널은 이미 추가되어 있습니다.",
+            "invalid_category": "입력값에서 카테고리를 추출하지 못했습니다.",
+            "category_not_found": "치지직이 이 카테고리를 찾을 수 없습니다.",
+            "category_already_added": "이 카테고리는 이미 추가되어 있습니다."
         },
         "abort": {
-            "no_channels": "등록된 채널이 없습니다."
+            "no_channels": "등록된 채널이 없습니다.",
+            "no_categories": "등록된 카테고리가 없습니다."
         }
     },
     "entity": {
@@ -108,6 +128,9 @@
             },
             "followers": {
                 "name": "팔로워 수"
+            },
+            "live_channels": {
+                "name": "방송 중인 채널 수"
             }
         }
     }

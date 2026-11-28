@@ -13,6 +13,15 @@
 | Started at | sensor | `openDate`, `device_class: timestamp` |
 | Followers | sensor | 채널 팔로워 수 |
 
+## 엔티티 (카테고리당)
+
+통합의 **구성** 메뉴에서 **카테고리 추가**를 고르고 카테고리 URL(`chzzk.naver.com/category/GAME/League_of_Legends`)이나 type/id(`GAME/League_of_Legends`)를 입력합니다. 카테고리마다 별도 디바이스가 생기며 5분마다 갱신됩니다.
+
+| 엔티티 | 타입 | 비고 |
+| --- | --- | --- |
+| Live channels | sensor | `openLiveCount`, `state_class: measurement`; `channels` 속성에 시청자 상위 5개 방송(`channel_id`, `channel_name`, `title`, `viewers`)이 들어가며 기록되지 않음 |
+| Viewers | sensor | 카테고리 전체 `concurrentUserCount`, `state_class: measurement` |
+
 ## 미디어 소스
 
 구성된 채널이 **미디어 → Chzzk** 아래에 표시됩니다. 채널을 열면 방송 중일 때 맨 위에 라이브(🔴 LIVE — HLS)가, 그 아래 최신 동영상(다시보기·업로드) 20개(MP4, 인코딩 중인 다시보기는 HLS)가 나열됩니다. 모두 이를 지원하는 미디어 플레이어(Chromecast, VLC, 브라우저 등)에서 재생할 수 있습니다. 자동화에서는:

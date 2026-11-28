@@ -7,6 +7,7 @@ import logging
 import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+from urllib.parse import quote, unquote
 
 from aiohttp import ClientError, ClientSession, ClientTimeout
 
@@ -25,6 +26,14 @@ VIDEOS_URL = (
     + "?sortType=LATEST&pagingType=PAGE&page=0&size={size}"
 )
 VIDEO_URL = BASE_URL + "/service/v3/videos/{video_no}"
+CATEGORY_INFO_URL = (
+    BASE_URL + "/service/v1/categories/{category_type}/{category_id}/info"
+)
+# Sorted by concurrent viewers, most-watched first.
+CATEGORY_LIVES_URL = (
+    BASE_URL
+    + "/service/v2/categories/{category_type}/{category_id}/lives?size={size}"
+)
 VOD_PLAYBACK_URL = (
     "https://apis.naver.com/neonplayer/vodplay/v2/playback/{video_id}?key={in_key}"
 )
@@ -33,6 +42,10 @@ _CHANNEL_ID_RE = re.compile(r"[0-9a-fA-F]{32}")
 _CHANNEL_URL_RE = re.compile(
     r"chzzk\.naver\.com/(?:live/)?(?P<id>[0-9a-fA-F]{32})"
 )
+_CATEGORY_URL_RE = re.compile(
+    r"chzzk\.naver\.com/category/(?P<type>[A-Za-z]+)/(?P<id>[^/?#\s]+)"
+)
+_CATEGORY_PATH_RE = re.compile(r"(?P<type>[A-Za-z]+)/(?P<id>[^/?#\s]+)")
 
 _HEADERS = {
     "Accept": "application/json",
@@ -84,6 +97,34 @@ class VideoInfo:
     publish_date: datetime | None
     duration: int | None  # seconds
     adult: bool
+
+
+@dataclass(frozen=True)
+class CategoryLive:
+    channel_id: str
+    channel_name: str
+    title: str | None
+    viewers: int | None
+
+
+@dataclass(frozen=True)
+class CategoryInfo:
+    category_type: str
+    category_id: str
+    category_value: str
+    poster_image_url: str | None
+    open_live_count: int | None
+    concurrent_user_count: int | None
+
+
+def extract_category(value: str) -> tuple[str, str] | None:
+    """Pull ``(category_type, category_id)`` out of a
+    ``chzzk.naver.com/category/<type>/<id>`` URL or a bare ``<type>/<id>``."""
+    value = (value or "").strip()
+    match = _CATEGORY_URL_RE.search(value) or _CATEGORY_PATH_RE.fullmatch(value)
+    if not match:
+        return None
+    return match.group("type").upper(), unquote(match.group("id"))
 
 
 def extract_channel_id(value: str) -> str | None:
@@ -240,6 +281,43 @@ class ChzzkClient:
             )
             for v in data.get("data") or []
             if v.get("videoNo") is not None
+        ]
+
+    async def get_category(self, category_type: str, category_id: str) -> CategoryInfo:
+        data = await self._get_json(
+            CATEGORY_INFO_URL.format(
+                category_type=category_type, category_id=quote(category_id, safe="")
+            )
+        )
+        return CategoryInfo(
+            category_type=category_type,
+            category_id=category_id,
+            category_value=str(data.get("categoryValue") or category_id),
+            poster_image_url=data.get("posterImageUrl") or None,
+            open_live_count=_int_or_none(data.get("openLiveCount")),
+            concurrent_user_count=_int_or_none(data.get("concurrentUserCount")),
+        )
+
+    async def get_category_lives(
+        self, category_type: str, category_id: str, size: int
+    ) -> list[CategoryLive]:
+        """Return the category's most-watched live streams, at most size."""
+        data = await self._get_json(
+            CATEGORY_LIVES_URL.format(
+                category_type=category_type,
+                category_id=quote(category_id, safe=""),
+                size=size,
+            )
+        )
+        return [
+            CategoryLive(
+                channel_id=channel["channelId"],
+                channel_name=str(channel.get("channelName") or ""),
+                title=live.get("liveTitle") or None,
+                viewers=_int_or_none(live.get("concurrentUserCount")),
+            )
+            for live in data.get("data") or []
+            if (channel := live.get("channel") or {}).get("channelId")
         ]
 
     async def get_video_playback(self, video_no: int) -> tuple[str, str] | None:

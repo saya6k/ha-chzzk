@@ -15,6 +15,10 @@ from homeassistant.helpers.typing import ConfigType
 
 from .api import ChzzkClient
 from .const import (
+    CONF_CATEGORIES,
+    CONF_CATEGORY_ID,
+    CONF_CATEGORY_NAME,
+    CONF_CATEGORY_TYPE,
     CONF_CHANNEL_ID,
     CONF_CHANNEL_NAME,
     CONF_CHANNELS,
@@ -22,7 +26,8 @@ from .const import (
     CONF_NID_SES,
     DOMAIN,
 )
-from .coordinator import ChzzkCoordinator
+from .coordinator import ChzzkCategoryCoordinator, ChzzkCoordinator
+from .entity import category_device_id
 from .llm_api import async_register as async_register_llm
 from .views import ChzzkChannelsView
 
@@ -85,13 +90,30 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             _LOGGER.exception("First refresh failed for %s", channel_id)
         coordinators[channel_id] = coord
 
+    category_coordinators: dict[str, ChzzkCategoryCoordinator] = {}
+    for cat in entry.options.get(CONF_CATEGORIES, []):
+        device_id = category_device_id(cat[CONF_CATEGORY_TYPE], cat[CONF_CATEGORY_ID])
+        cat_coord = ChzzkCategoryCoordinator(
+            hass,
+            client,
+            cat[CONF_CATEGORY_TYPE],
+            cat[CONF_CATEGORY_ID],
+            cat.get(CONF_CATEGORY_NAME) or cat[CONF_CATEGORY_ID],
+        )
+        try:
+            await cat_coord.async_config_entry_first_refresh()
+        except Exception:  # noqa: BLE001
+            _LOGGER.exception("First refresh failed for %s", device_id)
+        category_coordinators[device_id] = cat_coord
+
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN]["entry_id"] = entry.entry_id
     hass.data[DOMAIN]["client"] = client
     hass.data[DOMAIN]["coordinators"] = coordinators
+    hass.data[DOMAIN]["category_coordinators"] = category_coordinators
 
-    # Drop stale devices for channels that were removed.
-    _prune_orphan_devices(hass, entry, set(coordinators))
+    # Drop stale devices for channels and categories that were removed.
+    _prune_orphan_devices(hass, entry, {*coordinators, *category_coordinators})
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(_async_options_updated))
@@ -111,13 +133,13 @@ async def _async_options_updated(hass: HomeAssistant, entry: ConfigEntry) -> Non
 
 
 def _prune_orphan_devices(
-    hass: HomeAssistant, entry: ConfigEntry, live_channel_ids: set[str]
+    hass: HomeAssistant, entry: ConfigEntry, live_device_ids: set[str]
 ) -> None:
-    """Remove HA devices for channels that no longer exist in the entry."""
+    """Remove HA devices for channels/categories no longer in the entry."""
     device_reg = dr.async_get(hass)
     for device in dr.async_entries_for_config_entry(device_reg, entry.entry_id):
         for domain, identifier in device.identifiers:
-            if domain == DOMAIN and identifier not in live_channel_ids:
+            if domain == DOMAIN and identifier not in live_device_ids:
                 device_reg.async_remove_device(device.id)
-                _LOGGER.info("Removed orphan device for channel %s", identifier)
+                _LOGGER.info("Removed orphan device %s", identifier)
                 break
